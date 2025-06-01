@@ -10,9 +10,6 @@
 #[cfg(feature = "il2cpp_v31")]
 extern crate brocolib_il2cpp_v31 as brocolib;
 
-#[cfg(feature = "il2cpp_v29")]
-extern crate brocolib_il2cpp_v29 as brocolib;
-
 use brocolib::{global_metadata::TypeDefinitionIndex, runtime_metadata::TypeData};
 use byteorder::LittleEndian;
 use color_eyre::eyre::Context;
@@ -29,7 +26,7 @@ use std::{
     path::{Path, PathBuf},
     time,
 };
-
+use brocolib_il2cpp_v31::ObjectFormat;
 use clap::{Parser, Subcommand};
 
 use crate::generate::{cs_context_collection::TypeContextCollection, cs_type_tag::CsTypeTag};
@@ -109,7 +106,7 @@ fn main() -> color_eyre::Result<()> {
             cli.metadata.display()
         )
     })?;
-    let il2cpp_metadata = brocolib::Metadata::parse(&global_metadata_data, &elf_data)?;
+    let il2cpp_metadata = brocolib::Metadata::parse(&global_metadata_data, &elf_data, ObjectFormat::Pe)?;
 
     let get_tdi = |full_name: &str| {
         let tdi = il2cpp_metadata
